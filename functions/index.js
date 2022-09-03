@@ -20,7 +20,7 @@ app.use(express.json());
 
 
 // GET
-app.get('/', async (req, res) => {
+app.get('/work', async (req, res) => {
     const allVehicles = await MechConnectdbc.find().toArray()
     res.send(allVehicles)
 })
