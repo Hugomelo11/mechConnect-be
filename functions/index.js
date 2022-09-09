@@ -3,6 +3,9 @@ import express from "express";
 import cors from "cors";
 import { MongoClient } from "mongodb";
 import "dotenv/config";
+import { deleteVehicle, getVehicles, newVehicle, updateVehicle } from "./getroutes.js";
+
+
 
 const client = new MongoClient(process.env.MONGO_URI);
 const database = client.db("MechConnectDB");
@@ -16,44 +19,19 @@ app.use(cors());
 app.use(express.json());
 
 // GET
-app.get("/vehicles", async (req, res) => {
-  const allVehicles = await MechConnectdbc.find().toArray(req.body);
-  res.send(allVehicles);
-});
+app.get("/vehicles", getVehicles)
 
 // POST
-app.post("/newVehicle", async (req, res) => {
-  const newVehicle = {
-    info: req.body,
-    createdAt: new Date(),
-  };
-  await MechConnectdbc.insertOne(newVehicle);
-
-  res.send("not work");
-});
+app.post("/newVehicle", newVehicle)
 
 // DELETE
 
-app.delete("/", async (req, res) => {
-  await MechConnectdbc.findOneAndDelete(req.query);
-  res.send("item deleted");
-});
+app.delete("/", deleteVehicle)
 
 // PUT
 
-app.put("/", (req, res) => {
-  MechConnectdbc.findOneAndUpdate(req.query, { $set: req.body });
-});
+app.put("/", updateVehicle)
 
 export const api = functions.https.onRequest(app);
 
-// app.listen(5005, () => console.log('api listening on port 5005')
-// export const api = functions.https.onRequest(app);
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
